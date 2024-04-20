@@ -1,14 +1,24 @@
+using MongoDB.Driver;
+using Swashbuckle.AspNetCore.Swagger;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
+
+// MongoDB connection string
+var mongoConnectionString = "mongodb://localhost:27017";
+builder.Services.AddSingleton<IMongoClient>(new MongoClient(mongoConnectionString));
+
+// Add Swagger
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
+app.UseCors(policy => policy.AllowAnyHeader()
+    .AllowAnyMethod()
+    .SetIsOriginAllowed(origin => true)
+    .AllowCredentials());
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
