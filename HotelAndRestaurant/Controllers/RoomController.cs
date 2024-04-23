@@ -27,8 +27,8 @@ namespace HotelAndRestaurant.Controllers
 
         //GetById
         [HttpGet]
-        [Route("GetUserById")]
-        public async Task<IActionResult> GetQytetiByIdAsync(int Id)
+        [Route("GetRoomById")]
+        public async Task<IActionResult> GetRoomByIdAsync(int Id)
         {
             var room = await _db.Room.Include(q => q.RoomType).FirstOrDefaultAsync(q => q.Id == Id);
             return Ok(room);

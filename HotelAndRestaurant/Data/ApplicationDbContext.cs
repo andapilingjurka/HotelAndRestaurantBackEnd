@@ -14,6 +14,11 @@ namespace HotelAndRestaurant.Data
 
         public DbSet<RoomType> RoomType { get; set; }
 
+        public DbSet<Guest> Guests { get; set; }
+
+        public DbSet<Booking> Bookings { get; set; }
+        
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -23,6 +28,18 @@ namespace HotelAndRestaurant.Data
             .WithMany()
             .HasForeignKey(p => p.RoomTypeId) //Foreign Key
             .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Booking>()
+          .HasOne(p => p.Room)
+          .WithMany()
+          .HasForeignKey(p => p.RoomId) 
+          .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Booking>()
+          .HasOne(p => p.Guest)
+          .WithMany()
+          .HasForeignKey(p => p.GuestId)
+          .OnDelete(DeleteBehavior.Restrict);
 
         }
 

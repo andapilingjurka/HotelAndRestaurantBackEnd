@@ -27,8 +27,8 @@ namespace HotelAndRestaurant.Controllers
 
         //GetById
         [HttpGet]
-        [Route("GetUserById")]
-        public async Task<IActionResult> GetShtetiByIdAsync(int Id)
+        [Route("GetRoomTypeById")]
+        public async Task<IActionResult> GetRoomTypeByIdAsync(int Id)
         {
             var roomtype = await _db.RoomType.FindAsync(Id);
             return Ok(roomtype);
