@@ -54,8 +54,15 @@ namespace HotelAndRestaurant.Data
        .HasForeignKey(p => p.RoleId) //Foreign Key
        .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<stafi>()
+           .HasOne(p => p.RewardBonus)
+           .WithMany()
+           .HasForeignKey(p => p.RewardBonusId)
+           .OnDelete(DeleteBehavior.Restrict);
+        
 
-        }
+
+    }
 
     }
 }
