@@ -10,6 +10,21 @@ namespace HotelAndRestaurant.Data
         {
         }
 
+        public DbSet<Room> Room { get; set; }
+
         public DbSet<RoomType> RoomType { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Room>()
+            .HasOne(p => p.RoomType)
+            .WithMany()
+            .HasForeignKey(p => p.RoomTypeId) //Foreign Key
+            .OnDelete(DeleteBehavior.Restrict);
+
+        }
+
     }
 }
