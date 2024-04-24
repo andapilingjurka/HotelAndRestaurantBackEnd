@@ -21,6 +21,10 @@ namespace HotelAndRestaurant.Data
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
 
+         public DbSet<stafi> Stafi { get; set; }    
+
+        public DbSet<RewardBonus> rewardBonus { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
