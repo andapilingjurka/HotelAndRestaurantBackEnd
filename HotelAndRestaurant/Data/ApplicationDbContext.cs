@@ -17,7 +17,10 @@ namespace HotelAndRestaurant.Data
         public DbSet<Guest> Guests { get; set; }
 
         public DbSet<Booking> Bookings { get; set; }
-        
+
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<User> Users { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -40,6 +43,13 @@ namespace HotelAndRestaurant.Data
           .WithMany()
           .HasForeignKey(p => p.GuestId)
           .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<User>()
+       .HasOne(p => p.Role)
+       .WithMany()
+       .HasForeignKey(p => p.RoleId) //Foreign Key
+       .OnDelete(DeleteBehavior.Restrict);
+
 
         }
 
