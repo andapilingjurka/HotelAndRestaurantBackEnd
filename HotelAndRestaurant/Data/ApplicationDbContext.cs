@@ -10,5 +10,6 @@ namespace HotelAndRestaurant.Data
         {
         }
 
+        public DbSet<RoomType> RoomType { get; set; }
     }
 }
