@@ -114,8 +114,22 @@ namespace HotelAndRestaurant.Controllers
             return NoContent();
         }
 
+        [HttpGet("BookedDates/{roomId}")]
+        public async Task<IActionResult> GetBookedDates(int roomId)
+        {
+            var bookedDates = await _db.Bookings
+                .Where(b => b.RoomId == roomId)
+                .Select(b => new
+                {
+                    CheckIn = b.CheckInDate,
+                    CheckOut = b.CheckOutDate
+                })
+                .ToListAsync();
 
-       
-     
+            return Ok(bookedDates);
+        }
+
+
+
     }
 }
