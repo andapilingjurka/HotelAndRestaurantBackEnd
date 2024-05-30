@@ -1,4 +1,6 @@
-﻿using Stripe;
+﻿using HotelAndRestaurant.Application;
+using HotelAndRestaurant.Contracts;
+using Stripe;
 
 namespace HotelAndRestaurant
 {
