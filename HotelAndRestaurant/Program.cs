@@ -25,6 +25,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(
     }
     );
 
+// Stripe
+builder.Services.AddStripeInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
