@@ -9,7 +9,7 @@
         public DateTime Date { get; set; }
 
         public string Amount { get; set; }
-        public int BookingID { get; set; }
+        public Guid BookingID { get; set; }
 
         public Booking Booking { get; set; }
     }

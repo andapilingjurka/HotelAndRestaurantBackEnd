@@ -1,4 +1,5 @@
 ﻿using HotelAndRestaurant.Models;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelAndRestaurant.Data
@@ -25,6 +26,9 @@ namespace HotelAndRestaurant.Data
 
         public DbSet<RewardBonus> rewardBonus { get; set; }
 
+        public DbSet<Payment> Payment { get; set; }
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,32 +41,37 @@ namespace HotelAndRestaurant.Data
             .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Booking>()
-          .HasOne(p => p.Room)
-          .WithMany()
-          .HasForeignKey(p => p.RoomId) 
-          .OnDelete(DeleteBehavior.Restrict);
+           .HasOne(p => p.Room)
+           .WithMany()
+           .HasForeignKey(p => p.RoomId) 
+           .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Booking>()
-          .HasOne(p => p.User)
-          .WithMany()
-          .HasForeignKey(p => p.UserId)
-          .OnDelete(DeleteBehavior.Restrict);
+           .HasOne(p => p.User)
+           .WithMany()
+           .HasForeignKey(p => p.UserId)
+           .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<User>()
-       .HasOne(p => p.Role)
-       .WithMany()
-       .HasForeignKey(p => p.RoleId) //Foreign Key
-       .OnDelete(DeleteBehavior.Restrict);
+           .HasOne(p => p.Role)
+           .WithMany()
+           .HasForeignKey(p => p.RoleId) //Foreign Key
+           .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<stafi>()
            .HasOne(p => p.RewardBonus)
            .WithMany()
            .HasForeignKey(p => p.RewardBonusId)
            .OnDelete(DeleteBehavior.Restrict);
-        
+
+            modelBuilder.Entity<Payment>()
+           .HasOne(p => p.Booking)
+           .WithMany()
+           .HasForeignKey(p => p.BookingID) //Foreign Key
+           .OnDelete(DeleteBehavior.Restrict);
 
 
-    }
+        }
 
     }
 }
