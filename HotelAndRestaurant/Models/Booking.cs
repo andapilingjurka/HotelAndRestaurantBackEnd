@@ -7,7 +7,7 @@ namespace HotelAndRestaurant.Models
         [Key]
         public Guid Id { get; set; }
 
-        public long Price { get; set; }
+        public long Amount { get; set; }
         public string Currency { get; set; }
 
         public DateTimeOffset CheckInDate { get; set; }
