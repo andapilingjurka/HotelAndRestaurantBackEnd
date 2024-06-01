@@ -43,9 +43,9 @@ namespace HotelAndRestaurant.Data
           .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Booking>()
-          .HasOne(p => p.Guest)
+          .HasOne(p => p.User)
           .WithMany()
-          .HasForeignKey(p => p.GuestId)
+          .HasForeignKey(p => p.UserId)
           .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<User>()

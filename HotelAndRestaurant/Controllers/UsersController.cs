@@ -140,12 +140,13 @@ namespace HotelAndRestaurant.Controllers
             var existingState = await _db.Roles.FindAsync(userInDb.RoleId);
 
             var role = existingState.Name;
-
+            var id = userInDb.Id.ToString();
             // Create claims for the token
             var claims = new[]
             {
         new Claim(ClaimTypes.Name, userInDb.Email),
-        new Claim(ClaimTypes.Role, role)
+        new Claim(ClaimTypes.Role, role),
+        new Claim(ClaimTypes.NameIdentifier, id)
     };
 
             // Generate symmetric security key

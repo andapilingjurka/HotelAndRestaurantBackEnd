@@ -23,7 +23,7 @@ namespace HotelAndRestaurant.Controllers
         [Route("GetAllList")]
         public async Task<IActionResult> GetAsync()
         {
-            var booking = await _db.Bookings.Include(q => q.Guest).Include(q => q.Room).ToListAsync();
+            var booking = await _db.Bookings.Include(q => q.User).Include(q => q.Room).ToListAsync();
             return Ok(booking);
         }
 
@@ -32,40 +32,28 @@ namespace HotelAndRestaurant.Controllers
         [Route("GetBookingById")]
         public async Task<IActionResult> GetBookingByIdAsync(Guid Id)
         {
-            var booking = await _db.Bookings.Include(q => q.Guest).Include(q=>q.Room).FirstOrDefaultAsync(q => q.Id == Id);
+            var booking = await _db.Bookings.Include(q => q.User).Include(q=>q.Room).FirstOrDefaultAsync(q => q.Id == Id);
             return Ok(booking);
         }
-        //Get by guest name
-        [HttpGet]
-        [Route("GetBookingsByGuestName")]
-        public async Task<IActionResult> GetBookingsByGuestNameAsync(string guestName, string guestLastName)
-        {
-            var bookings = await _db.Bookings
-                .Include(q => q.Guest)
-                .Include(q => q.Room)
-                .Where(q => q.Guest.Name == guestName && q.Guest.LastName == guestLastName)
-                .ToListAsync();
-
-            return Ok(bookings);
-        }
+       
         //Add
         [HttpPost]
         [Route("Add")]
         public async Task<IActionResult> PostAsync(Booking booking)
         {
             
-            var existingGuest = await _db.Guests.FindAsync(booking.GuestId);
+            var existingGuest = await _db.Users.FindAsync(booking.UserId);
             var existingRoom = await _db.Room.FindAsync(booking.RoomId);
             if (existingGuest == null)
             {
-                return NotFound($"Guest me ID {booking.GuestId} nuk ekziston.");
+                return NotFound($"Guest me ID {booking.UserId} nuk ekziston.");
             }
             if (existingRoom == null)
             {
                 return NotFound($"Room me ID {booking.RoomId} nuk ekziston.");
             }
 
-            booking.Guest = existingGuest;
+            booking.User = existingGuest;
             booking.Room = existingRoom;
 
             _db.Bookings.Add(booking);
@@ -79,17 +67,17 @@ namespace HotelAndRestaurant.Controllers
         public async Task<IActionResult> PutAsync(Booking booking)
         {
             // Kontrollo nëse RoomType ekziston
-            var existingGuest = await _db.Guests.FindAsync(booking.GuestId);
+            var existingGuest = await _db.Users.FindAsync(booking.UserId);
             var existingRoom = await _db.Room.FindAsync(booking.RoomId);
             if (existingGuest == null)
             {
-                return NotFound($"Guest me ID {booking.GuestId} nuk ekziston.");
+                return NotFound($"Guest me ID {booking.UserId} nuk ekziston.");
             }
             if (existingRoom == null)
             {
                 return NotFound($"Room me ID {booking.RoomId} nuk ekziston.");
             }
-            booking.Guest = existingGuest;
+            booking.User = existingGuest;
             booking.Room = existingRoom;
 
             _db.Bookings.Update(booking);
@@ -102,7 +90,7 @@ namespace HotelAndRestaurant.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteAsync(Guid Id)
         {
-            var bookingIdToDelete= await _db.Bookings.Include(q => q.Guest).Include(q=>q.Room).FirstOrDefaultAsync(q => q.Id == Id);
+            var bookingIdToDelete= await _db.Bookings.Include(q => q.User).Include(q=>q.Room).FirstOrDefaultAsync(q => q.Id == Id);
 
             if (bookingIdToDelete == null)
             {
