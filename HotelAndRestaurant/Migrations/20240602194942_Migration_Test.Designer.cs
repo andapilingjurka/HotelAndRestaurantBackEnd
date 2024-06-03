@@ -4,6 +4,7 @@ using HotelAndRestaurant.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HotelAndRestaurant.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240602194942_Migration_Test")]
+    partial class Migration_Test
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -335,7 +337,7 @@ namespace HotelAndRestaurant.Migrations
                             Email = "admin@hotel.com",
                             FirstName = "admin",
                             LastName = "",
-                            Password = "$2a$10$rL9JAcahgl2uzhgRdDt9cuV0NNZNNGE9T4.H9SXsl72kM7Vws1BDm",
+                            Password = "hotel123",
                             RoleId = 1
                         },
                         new
@@ -344,7 +346,7 @@ namespace HotelAndRestaurant.Migrations
                             Email = "user@hotel.com",
                             FirstName = "client",
                             LastName = "",
-                            Password = "$2a$10$rL9JAcahgl2uzhgRdDt9cuV0NNZNNGE9T4.H9SXsl72kM7Vws1BDm",
+                            Password = "hotel123",
                             RoleId = 2
                         },
                         new
@@ -353,7 +355,7 @@ namespace HotelAndRestaurant.Migrations
                             Email = "receptionist@hotel.com",
                             FirstName = "receptionist",
                             LastName = "",
-                            Password = "$2a$10$rL9JAcahgl2uzhgRdDt9cuV0NNZNNGE9T4.H9SXsl72kM7Vws1BDm",
+                            Password = "hotel123",
                             RoleId = 3
                         },
                         new
@@ -362,7 +364,7 @@ namespace HotelAndRestaurant.Migrations
                             Email = "housekeeper1@hotel.com",
                             FirstName = "housekeeper",
                             LastName = "",
-                            Password = "$2a$10$rL9JAcahgl2uzhgRdDt9cuV0NNZNNGE9T4.H9SXsl72kM7Vws1BDm",
+                            Password = "hotel123",
                             RoleId = 4
                         });
                 });
