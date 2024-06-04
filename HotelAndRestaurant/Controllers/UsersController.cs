@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace HotelAndRestaurant.Controllers
@@ -127,53 +128,65 @@ namespace HotelAndRestaurant.Controllers
 
         [HttpPost]
         [Route("Login")]
-
         public async Task<IActionResult> Login(Login user)
         {
             var userInDb = await _db.Users.SingleOrDefaultAsync(u => u.Email == user.Email);
-
             if (userInDb == null || !BCrypt.Net.BCrypt.Verify(user.Password, userInDb.Password))
             {
                 return BadRequest("Emaili ose Fjalekalimi gabim.");
             }
 
-            var existingState = await _db.Roles.FindAsync(userInDb.RoleId);
+            // Generate tokens
+            var tokens = GenerateTokens(userInDb);
+            userInDb.RefreshToken = tokens.RefreshToken;
+            userInDb.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(1); // Refresh token is valid for 1 days
+            await _db.SaveChangesAsync();
 
-            var role = existingState.Name;
-            var id = userInDb.Id.ToString();
-            // Create claims for the token
+            return Ok(new { AccessToken = tokens.AccessToken, RefreshToken = tokens.RefreshToken });
+        }
+
+        private (string AccessToken, string RefreshToken) GenerateTokens(User user)
+        {
+            var userInDb = _db.Users.SingleOrDefault(u => u.Email == user.Email);
+            var existingState = _db.Roles.Find(userInDb.RoleId);
+
             var claims = new[]
             {
-        new Claim(ClaimTypes.Name, userInDb.Email),
-        new Claim(ClaimTypes.Role, role),
-        new Claim(ClaimTypes.NameIdentifier, id)
+        new Claim(ClaimTypes.Name, user.Email),
+        new Claim(ClaimTypes.Role, existingState.Name),
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
     };
 
-            // Generate symmetric security key
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourSecretKeyWithAtLeast16Characters"));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourSecretKeyWithAtLeast16Characters"));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            // Generate signing credentials using the security key
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var accessToken = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(60), // Shorter expiry for access token
+                signingCredentials: creds);
 
-            // Create token descriptor
-            var tokenDescriptor = new SecurityTokenDescriptor
+            var refreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+
+            return (new JwtSecurityTokenHandler().WriteToken(accessToken), refreshToken);
+        }
+
+        [HttpPost]
+        [Route("RefreshToken")]
+        public async Task<IActionResult> RefreshToken(string refreshToken)
+        {
+            var userInDb = await _db.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken && u.RefreshTokenExpiryTime > DateTime.UtcNow);
+            if (userInDb == null)
             {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddDays(1), // Set token expiration
-                SigningCredentials = credentials
-            };
+                return BadRequest("Invalid or expired refresh token.");
+            }
 
-            // Create a token handler
-            var tokenHandler = new JwtSecurityTokenHandler();
+            // Generate new tokens
+            var newTokens = GenerateTokens(userInDb);
+            userInDb.RefreshToken = newTokens.RefreshToken; // Update refresh token
+           // userInDb.RefreshTokenExpiryTime = DateTime.UtcNow.AddMinutes(2);
+            await _db.SaveChangesAsync();
 
-            // Generate token based on the token descriptor
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-
-
-            // Convert token to a string
-            var tokenString = tokenHandler.WriteToken(token);
-
-            return Ok(new { Token = tokenString });
+            return Ok(new { AccessToken = newTokens.AccessToken, RefreshToken = newTokens.RefreshToken });
         }
 
         //Filtering
