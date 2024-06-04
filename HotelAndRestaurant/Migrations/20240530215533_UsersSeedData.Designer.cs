@@ -4,6 +4,7 @@ using HotelAndRestaurant.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HotelAndRestaurant.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240530215533_UsersSeedData")]
+    partial class UsersSeedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,26 +36,23 @@ namespace HotelAndRestaurant.Migrations
                     b.Property<DateTime?>("CheckOutDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("LastName")
+                    b.Property<string>("Currency")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid?>("GuestId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long>("Price")
+                        .HasColumnType("bigint");
 
                     b.Property<int?>("RoomId")
                         .HasColumnType("int");
 
-                    b.Property<double>("ToTal")
-                        .HasColumnType("float");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("RoomId");
+                    b.HasIndex("GuestId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("RoomId");
 
                     b.ToTable("Bookings");
                 });
@@ -79,66 +78,6 @@ namespace HotelAndRestaurant.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Guests");
-                });
-
-            modelBuilder.Entity("HotelAndRestaurant.Models.Notification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("RoomId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoomId");
-
-                    b.ToTable("Notifications");
-                });
-
-            modelBuilder.Entity("HotelAndRestaurant.Models.Payment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Amount")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("BookingID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Phone")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Surname")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookingID");
-
-                    b.ToTable("Payment");
                 });
 
             modelBuilder.Entity("HotelAndRestaurant.Models.RewardBonus", b =>
@@ -195,7 +134,7 @@ namespace HotelAndRestaurant.Migrations
                         {
                             Id = 2,
                             Description = "Regular user with access to basic features.",
-                            Name = "client"
+                            Name = "user"
                         },
                         new
                         {
@@ -225,9 +164,6 @@ namespace HotelAndRestaurant.Migrations
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("NeedsCleaning")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Price")
                         .HasColumnType("nvarchar(max)");
 
@@ -238,6 +174,7 @@ namespace HotelAndRestaurant.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -335,16 +272,16 @@ namespace HotelAndRestaurant.Migrations
                             Email = "admin@hotel.com",
                             FirstName = "admin",
                             LastName = "",
-                            Password = "$2a$10$rL9JAcahgl2uzhgRdDt9cuV0NNZNNGE9T4.H9SXsl72kM7Vws1BDm",
+                            Password = "hotel123",
                             RoleId = 1
                         },
                         new
                         {
                             Id = 2,
                             Email = "user@hotel.com",
-                            FirstName = "client",
+                            FirstName = "user",
                             LastName = "",
-                            Password = "$2a$10$rL9JAcahgl2uzhgRdDt9cuV0NNZNNGE9T4.H9SXsl72kM7Vws1BDm",
+                            Password = "hotel123",
                             RoleId = 2
                         },
                         new
@@ -353,7 +290,7 @@ namespace HotelAndRestaurant.Migrations
                             Email = "receptionist@hotel.com",
                             FirstName = "receptionist",
                             LastName = "",
-                            Password = "$2a$10$rL9JAcahgl2uzhgRdDt9cuV0NNZNNGE9T4.H9SXsl72kM7Vws1BDm",
+                            Password = "hotel123",
                             RoleId = 3
                         },
                         new
@@ -362,48 +299,26 @@ namespace HotelAndRestaurant.Migrations
                             Email = "housekeeper1@hotel.com",
                             FirstName = "housekeeper",
                             LastName = "",
-                            Password = "$2a$10$rL9JAcahgl2uzhgRdDt9cuV0NNZNNGE9T4.H9SXsl72kM7Vws1BDm",
+                            Password = "hotel123",
                             RoleId = 4
                         });
                 });
 
             modelBuilder.Entity("HotelAndRestaurant.Models.Booking", b =>
                 {
+                    b.HasOne("HotelAndRestaurant.Models.Guest", "Guest")
+                        .WithMany()
+                        .HasForeignKey("GuestId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("HotelAndRestaurant.Models.Room", "Room")
                         .WithMany()
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("HotelAndRestaurant.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                    b.Navigation("Guest");
 
                     b.Navigation("Room");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("HotelAndRestaurant.Models.Notification", b =>
-                {
-                    b.HasOne("HotelAndRestaurant.Models.Room", "Room")
-                        .WithMany("Notifications")
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Room");
-                });
-
-            modelBuilder.Entity("HotelAndRestaurant.Models.Payment", b =>
-                {
-                    b.HasOne("HotelAndRestaurant.Models.Booking", "Booking")
-                        .WithMany()
-                        .HasForeignKey("BookingID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Booking");
                 });
 
             modelBuilder.Entity("HotelAndRestaurant.Models.Room", b =>
@@ -437,11 +352,6 @@ namespace HotelAndRestaurant.Migrations
                         .IsRequired();
 
                     b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("HotelAndRestaurant.Models.Room", b =>
-                {
-                    b.Navigation("Notifications");
                 });
 #pragma warning restore 612, 618
         }

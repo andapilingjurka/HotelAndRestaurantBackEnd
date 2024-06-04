@@ -103,6 +103,20 @@ namespace HotelAndRestaurant.Controllers
             return Ok(rooms);
         }
 
+        [HttpGet("available")]
+        public ActionResult<IEnumerable<Room>> GetAvailableRooms()
+        {
+            var rooms = _db.Room.Where(r => r.Status.ToString()== "Avaliable").ToList();
+            return Ok(rooms);
+        }
+
+        [HttpGet("needs-cleaning")]
+        public ActionResult<IEnumerable<Room>> GetRoomsNeedingCleaning()
+        {
+            var rooms = _db.Room.Where(r => !(r.Status.ToString() == "Avaliable") && r.NeedsCleaning).ToList();
+            return Ok(rooms);
+        }
+
         //Filtering
         [HttpGet]
         [Route("GetAllFiltering")]

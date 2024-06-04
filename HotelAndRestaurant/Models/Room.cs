@@ -9,7 +9,8 @@ namespace HotelAndRestaurant.Models
 
         public int RoomNumber { get; set; }
 
-    
+      //  [Required]
+        [EnumDataType(typeof(RoomStatus))]
         public string Status { get; set; }
 
         public string Image { get; set; }
@@ -17,9 +18,11 @@ namespace HotelAndRestaurant.Models
         public string Price { get; set; }
 
         public string Description { get; set; }
-
+        public bool NeedsCleaning { get; set; }
         public int RoomTypeId { get; set; }
 
         public RoomType RoomType { get; set; }
+
+        public ICollection<Notification> Notifications { get; set; }
     }
 }
