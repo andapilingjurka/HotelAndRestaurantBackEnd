@@ -86,5 +86,69 @@ namespace HotelAndRestaurant.Controllers
             await _db.SaveChangesAsync();
             return NoContent();
         }
+
+
+        //Filtering
+        [HttpGet]
+        [Route("GetAllFiltering")]
+        public async Task<IActionResult> GetFiltering([FromQuery] string searchQuery, [FromQuery] string sortField, [FromQuery] bool isAscending)
+        {
+            var query = _db.Payment.AsQueryable();
+            int searchQueryInt;
+            DateTime searchQueryDate;
+
+            // Kërkimi
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                query = query.Where(p =>
+                    p.Name.Contains(searchQuery) ||
+                    p.Surname.Contains(searchQuery) ||
+                    p.Phone.Contains(searchQuery) ||
+                    p.Amount.Contains(searchQuery) ||
+                    (p.BookingID.ToString().Contains(searchQuery)) ||
+                    (int.TryParse(searchQuery, out searchQueryInt) && p.Id == searchQueryInt) ||
+                    (DateTime.TryParse(searchQuery, out searchQueryDate) && p.Date.Date == searchQueryDate.Date)
+                );
+            }
+
+            // Renditja
+            switch (sortField.ToLower())
+            {
+                case "id":
+                    query = isAscending ? query.OrderBy(p => p.Id) : query.OrderByDescending(p => p.Id);
+                    break;
+
+                case "name":
+                    query = isAscending ? query.OrderBy(p => p.Name) : query.OrderByDescending(p => p.Name);
+                    break;
+
+                case "surname":
+                    query = isAscending ? query.OrderBy(p => p.Surname) : query.OrderByDescending(p => p.Surname);
+                    break;
+
+                case "phone":
+                    query = isAscending ? query.OrderBy(p => p.Phone) : query.OrderByDescending(p => p.Phone);
+                    break;
+
+                case "date":
+                    query = isAscending ? query.OrderBy(p => p.Date) : query.OrderByDescending(p => p.Date);
+                    break;
+
+                case "amount":
+                    query = isAscending ? query.OrderBy(p => p.Amount) : query.OrderByDescending(p => p.Amount);
+                    break;
+
+                case "bookingid":
+                    query = isAscending ? query.OrderBy(p => p.BookingID) : query.OrderByDescending(p => p.BookingID);
+                    break;
+
+                default:
+                    query = query.OrderBy(p => p.Id);
+                    break;
+            }
+
+            var result = await query.ToListAsync();
+            return Ok(result);
+        }
     }
 }

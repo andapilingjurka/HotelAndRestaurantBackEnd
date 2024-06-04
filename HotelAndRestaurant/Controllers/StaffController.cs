@@ -79,5 +79,68 @@ namespace HotelAndRestaurant.Controllers
             await _db.SaveChangesAsync();
             return NoContent();
         }
+
+        //Filtering
+        [HttpGet]
+        [Route("GetAllFiltering")]
+        public async Task<IActionResult> GetFiltering([FromQuery] string searchQuery, [FromQuery] string sortField, [FromQuery] bool isAscending)
+        {
+            var query = _db.Stafi.AsQueryable(); 
+            int searchQueryInt;
+
+            // Kërkimi
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                query = query.Where(p =>
+                    p.name.Contains(searchQuery) ||
+                    p.surname.Contains(searchQuery) ||
+                    p.Image.Contains(searchQuery) ||
+                    p.nrPhone.Contains(searchQuery) ||
+                    (int.TryParse(searchQuery, out searchQueryInt) && p.id == searchQueryInt) ||
+                    (int.TryParse(searchQuery, out searchQueryInt) && p.stafiId == searchQueryInt) ||
+                    (int.TryParse(searchQuery, out searchQueryInt) && p.cualification == searchQueryInt) ||
+                    (int.TryParse(searchQuery, out searchQueryInt) && p.RewardBonusId == searchQueryInt)
+                );
+            }
+
+            // Renditja
+            switch (sortField?.ToLower())
+            {
+                case "id":
+                    query = isAscending ? query.OrderBy(p => p.id) : query.OrderByDescending(p => p.id);
+                    break;
+
+                case "name":
+                    query = isAscending ? query.OrderBy(p => p.name) : query.OrderByDescending(p => p.name);
+                    break;
+
+                case "surname":
+                    query = isAscending ? query.OrderBy(p => p.surname) : query.OrderByDescending(p => p.surname);
+                    break;
+
+                case "image":
+                    query = isAscending ? query.OrderBy(p => p.Image) : query.OrderByDescending(p => p.Image);
+                    break;
+
+                case "nrphone":
+                    query = isAscending ? query.OrderBy(p => p.nrPhone) : query.OrderByDescending(p => p.nrPhone);
+                    break;
+
+                case "cualification":
+                    query = isAscending ? query.OrderBy(p => p.cualification) : query.OrderByDescending(p => p.cualification);
+                    break;
+
+                case "rewardbonusid":
+                    query = isAscending ? query.OrderBy(p => p.RewardBonusId) : query.OrderByDescending(p => p.RewardBonusId);
+                    break;
+
+                default:
+                    query = query.OrderBy(p => p.id);
+                    break;
+            }
+
+            var result = await query.ToListAsync();
+            return Ok(result);
+        }
     }
 }

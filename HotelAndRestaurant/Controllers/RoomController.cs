@@ -102,5 +102,67 @@ namespace HotelAndRestaurant.Controllers
 
             return Ok(rooms);
         }
+
+        //Filtering
+        [HttpGet]
+        [Route("GetAllFiltering")]
+        public async Task<IActionResult> GetFiltering([FromQuery] string searchQuery, [FromQuery] string sortField, [FromQuery] bool isAscending)
+        {
+            var query = _db.Room.AsQueryable(); 
+            int searchQueryInt;
+
+            // Kërkimi
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                query = query.Where(p =>
+                    p.Status.Contains(searchQuery) ||
+                    p.Image.Contains(searchQuery) ||
+                    p.Price.Contains(searchQuery) ||
+                    p.Description.Contains(searchQuery) ||
+                    (int.TryParse(searchQuery, out searchQueryInt) && p.Id == searchQueryInt) ||
+                    (int.TryParse(searchQuery, out searchQueryInt) && p.RoomNumber == searchQueryInt) ||
+                    (int.TryParse(searchQuery, out searchQueryInt) && p.RoomTypeId == searchQueryInt)
+                );
+            }
+
+            // Renditja
+            switch (sortField?.ToLower())
+            {
+                case "id":
+                    query = isAscending ? query.OrderBy(p => p.Id) : query.OrderByDescending(p => p.Id);
+                    break;
+
+                case "roomnumber":
+                    query = isAscending ? query.OrderBy(p => p.RoomNumber) : query.OrderByDescending(p => p.RoomNumber);
+                    break;
+
+                case "status":
+                    query = isAscending ? query.OrderBy(p => p.Status) : query.OrderByDescending(p => p.Status);
+                    break;
+
+                case "image":
+                    query = isAscending ? query.OrderBy(p => p.Image) : query.OrderByDescending(p => p.Image);
+                    break;
+
+                case "price":
+                    query = isAscending ? query.OrderBy(p => p.Price) : query.OrderByDescending(p => p.Price);
+                    break;
+
+                case "description":
+                    query = isAscending ? query.OrderBy(p => p.Description) : query.OrderByDescending(p => p.Description);
+                    break;
+
+                case "roomtypeid":
+                    query = isAscending ? query.OrderBy(p => p.RoomTypeId) : query.OrderByDescending(p => p.RoomTypeId);
+                    break;
+
+                default:
+                    query = query.OrderBy(p => p.Id);
+                    break;
+            }
+
+            var result = await query.ToListAsync();
+            return Ok(result);
+        }
     }
 }

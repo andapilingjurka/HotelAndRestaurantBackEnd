@@ -176,5 +176,62 @@ namespace HotelAndRestaurant.Controllers
             return Ok(new { Token = tokenString });
         }
 
+        //Filtering
+        [HttpGet]
+        [Route("GetAllFiltering")]
+        public async Task<IActionResult> GetFiltering([FromQuery] string searchQuery, [FromQuery] string sortField, [FromQuery] bool isAscending)
+        {
+            var query = _db.Users.AsQueryable(); 
+            int searchQueryInt;
+
+            // Kërkimi
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                query = query.Where(p =>
+                    p.FirstName.Contains(searchQuery) ||
+                    p.LastName.Contains(searchQuery) ||
+                    p.Email.Contains(searchQuery) ||
+                    p.Password.Contains(searchQuery) ||
+                    (int.TryParse(searchQuery, out searchQueryInt) && p.Id == searchQueryInt) ||
+                    (int.TryParse(searchQuery, out searchQueryInt) && p.RoleId == searchQueryInt)
+                );
+            }
+
+            // Renditja
+            switch (sortField?.ToLower())
+            {
+                case "id":
+                    query = isAscending ? query.OrderBy(p => p.Id) : query.OrderByDescending(p => p.Id);
+                    break;
+
+                case "firstname":
+                    query = isAscending ? query.OrderBy(p => p.FirstName) : query.OrderByDescending(p => p.FirstName);
+                    break;
+
+                case "lastname":
+                    query = isAscending ? query.OrderBy(p => p.LastName) : query.OrderByDescending(p => p.LastName);
+                    break;
+
+                case "email":
+                    query = isAscending ? query.OrderBy(p => p.Email) : query.OrderByDescending(p => p.Email);
+                    break;
+
+                case "password":
+                    query = isAscending ? query.OrderBy(p => p.Password) : query.OrderByDescending(p => p.Password);
+                    break;
+
+                case "roleid":
+                    query = isAscending ? query.OrderBy(p => p.RoleId) : query.OrderByDescending(p => p.RoleId);
+                    break;
+
+                default:
+                    query = query.OrderBy(p => p.Id);
+                    break;
+            }
+
+            var result = await query.ToListAsync();
+            return Ok(result);
+        }
+
     }
 }

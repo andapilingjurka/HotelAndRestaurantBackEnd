@@ -69,5 +69,47 @@ namespace HotelAndRestaurant.Controllers
             await _db.SaveChangesAsync();
             return NoContent();
         }
+
+        //Filtering
+        [HttpGet]
+        [Route("GetAllFiltering")]
+        public async Task<IActionResult> GetFiltering([FromQuery] string searchQuery, [FromQuery] string sortField, [FromQuery] bool isAscending)
+        {
+            var query = _db.Roles.AsQueryable();
+            int searchQueryInt;
+
+            // Kërkimi
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                query = query.Where(p =>
+                    p.Name.Contains(searchQuery) ||
+                    p.Description.Contains(searchQuery) ||
+                    (int.TryParse(searchQuery, out searchQueryInt) && p.Id == searchQueryInt)
+                );
+            }
+
+            // Renditja
+            switch (sortField?.ToLower())
+            {
+                case "id":
+                    query = isAscending ? query.OrderBy(p => p.Id) : query.OrderByDescending(p => p.Id);
+                    break;
+
+                case "name":
+                    query = isAscending ? query.OrderBy(p => p.Name) : query.OrderByDescending(p => p.Name);
+                    break;
+
+                case "description":
+                    query = isAscending ? query.OrderBy(p => p.Description) : query.OrderByDescending(p => p.Description);
+                    break;
+
+                default:
+                    query = query.OrderBy(p => p.Id);
+                    break;
+            }
+
+            var result = await query.ToListAsync();
+            return Ok(result);
+        }
     }
 }
