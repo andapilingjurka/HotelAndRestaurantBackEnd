@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.InkML;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using HotelAndRestaurant.Data;
 using HotelAndRestaurant.Migrations;
@@ -236,5 +237,39 @@ namespace HotelAndRestaurant.Controllers
                 }
             }
         }
+        // PUT: api/Booking/{id}/UpdateCleaningStatus
+        [HttpGet("UpdateCleaningStatus")]
+        public ActionResult<IEnumerable<Models.Room>> CheckAndCleanRooms()
+
+        {
+            var rooms = _db.Room.Include(r => r.RoomType).ToList();
+            bool saveChanges = false;
+
+            foreach (var room in rooms)
+            {
+                // Assuming you have a method to get the latest booking for each room
+                var latestBooking = _db.Bookings
+                    .Where(b => b.RoomId == room.Id && b.CheckOutDate.HasValue)
+                    .OrderByDescending(b => b.CheckOutDate)
+                    .FirstOrDefault();
+
+                if (latestBooking != null && latestBooking.CheckOutDate <= DateTime.Now)
+                {
+                    if (!room.NeedsCleaning)
+                    {
+                        room.NeedsCleaning = true;
+                        saveChanges = true;
+                    }
+                }
+            }
+
+            if (saveChanges)
+            {
+                _db.SaveChanges();
+            }
+
+            return rooms;
+        }
+    
     }
 }

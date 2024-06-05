@@ -22,5 +22,13 @@ namespace HotelAndRestaurant.Models
 
         public User User { get; set; }
 
+        public void CheckAndSetRoomCleaningStatus()
+        {
+            if (CheckOutDate.HasValue && CheckOutDate <= DateTime.Now)
+            {
+                Room.NeedsCleaning = true;
+            }
+        }
+
     }
 }
