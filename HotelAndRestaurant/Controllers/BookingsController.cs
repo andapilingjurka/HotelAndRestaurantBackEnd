@@ -1,9 +1,12 @@
-﻿using HotelAndRestaurant.Data;
+﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using HotelAndRestaurant.Data;
 using HotelAndRestaurant.Migrations;
 using HotelAndRestaurant.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver.Linq;
 
 namespace HotelAndRestaurant.Controllers
 {
@@ -184,6 +187,54 @@ namespace HotelAndRestaurant.Controllers
 
             var result = await query.ToListAsync();
             return Ok(result);
+        }
+
+
+        [HttpGet("ExportToExcel")]
+        public async Task<IActionResult> ExportToExcel()
+        {
+            var bookings = await _db.Bookings.Include(q => q.User).Include(q => q.Room).ToListAsync();
+
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Bookings");
+                var currentRow = 1;
+
+                // Header
+                //worksheet.Cell(currentRow, 1).Value = "Id";
+                worksheet.Cell(currentRow, 2).Value = "First Name";
+                worksheet.Cell(currentRow, 3).Value = "Last Name";
+                worksheet.Cell(currentRow, 4).Value = "Total";
+                worksheet.Cell(currentRow, 5).Value = "CheckIn Date";
+                worksheet.Cell(currentRow, 6).Value = "CheckOut Date";
+                worksheet.Cell(currentRow, 7).Value = "RoomID";
+                worksheet.Cell(currentRow, 8).Value = "UserID";
+
+                // Body
+                foreach (var booking in bookings)
+                {
+                    currentRow++;
+                    //worksheet.Cell(currentRow, 1).Value = booking.Id;
+                    worksheet.Cell(currentRow, 2).Value = booking.Name;
+                    worksheet.Cell(currentRow, 3).Value = booking.LastName;
+                    worksheet.Cell(currentRow, 4).Value = booking.ToTal;
+                    worksheet.Cell(currentRow, 5).Value = booking.CheckInDate.ToString("yyyy-MM-dd");
+                    worksheet.Cell(currentRow, 6).Value = booking.CheckOutDate?.ToString("yyyy-MM-dd");
+                    worksheet.Cell(currentRow, 7).Value = booking.RoomId;
+                    worksheet.Cell(currentRow, 8).Value = booking.UserId;
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+
+                    return File(
+                        content,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "bookings.xlsx");
+                }
+            }
         }
     }
 }

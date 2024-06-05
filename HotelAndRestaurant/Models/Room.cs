@@ -10,8 +10,8 @@ namespace HotelAndRestaurant.Models
         public int RoomNumber { get; set; }
 
       //  [Required]
-        [EnumDataType(typeof(RoomStatus))]
-        public string Status { get; set; }
+      //  [EnumDataType(typeof(RoomStatus))]
+        public RoomStatus Status { get; set; }
 
         public string Image { get; set; }
 

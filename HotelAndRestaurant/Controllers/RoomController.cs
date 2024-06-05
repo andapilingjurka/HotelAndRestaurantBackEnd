@@ -129,7 +129,7 @@ namespace HotelAndRestaurant.Controllers
             if (!string.IsNullOrEmpty(searchQuery))
             {
                 query = query.Where(p =>
-                    p.Status.Contains(searchQuery) ||
+                    p.Status.ToString().Contains(searchQuery) ||
                     p.Image.Contains(searchQuery) ||
                     p.Price.Contains(searchQuery) ||
                     p.Description.Contains(searchQuery) ||

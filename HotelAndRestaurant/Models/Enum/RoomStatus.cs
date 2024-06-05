@@ -2,10 +2,10 @@
 {
     public enum RoomStatus
     {
-        Available,
-        Reserved,
-        Inspected,
-        DoNotDisturb,
-        CheckedOut
+        Available=0,
+        Reserved=1,
+        Inspected=2,
+        DoNotDisturb=3,
+        CheckedOut=4
     }
 }

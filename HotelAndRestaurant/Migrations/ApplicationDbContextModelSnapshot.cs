@@ -237,14 +237,82 @@ namespace HotelAndRestaurant.Migrations
                     b.Property<int>("RoomTypeId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("RoomTypeId");
 
                     b.ToTable("Room");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 21,
+                            Description = "A cozy single room.",
+                            Image = "/images/image1.jpg",
+                            NeedsCleaning = false,
+                            Price = "100",
+                            RoomNumber = 101,
+                            RoomTypeId = 21,
+                            Status = 0
+                        },
+                        new
+                        {
+                            Id = 22,
+                            Description = "A spacious double room.",
+                            Image = "/images/image2.jpg",
+                            NeedsCleaning = true,
+                            Price = "150",
+                            RoomNumber = 102,
+                            RoomTypeId = 22,
+                            Status = 0
+                        },
+                        new
+                        {
+                            Id = 23,
+                            Description = "A luxurious suite.",
+                            Image = "/images/image3.jpg",
+                            NeedsCleaning = false,
+                            Price = "200",
+                            RoomNumber = 103,
+                            RoomTypeId = 23,
+                            Status = 0
+                        },
+                        new
+                        {
+                            Id = 24,
+                            Description = "A comfortable twin room.",
+                            Image = "/images/image4.jpg",
+                            NeedsCleaning = false,
+                            Price = "120",
+                            RoomNumber = 104,
+                            RoomTypeId = 22,
+                            Status = 0
+                        },
+                        new
+                        {
+                            Id = 25,
+                            Description = "A deluxe double room.",
+                            Image = "/images/image5.jpg",
+                            NeedsCleaning = true,
+                            Price = "180",
+                            RoomNumber = 105,
+                            RoomTypeId = 22,
+                            Status = 0
+                        },
+                        new
+                        {
+                            Id = 26,
+                            Description = "A premium suite.",
+                            Image = "/images/image6.jpg",
+                            NeedsCleaning = false,
+                            Price = "250",
+                            RoomNumber = 106,
+                            RoomTypeId = 23,
+                            Status = 0
+                        });
                 });
 
             modelBuilder.Entity("HotelAndRestaurant.Models.RoomType", b =>
@@ -261,6 +329,23 @@ namespace HotelAndRestaurant.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("RoomType");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 21,
+                            RoomName = "Single"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            RoomName = "Double"
+                        },
+                        new
+                        {
+                            Id = 23,
+                            RoomName = "Suite"
+                        });
                 });
 
             modelBuilder.Entity("HotelAndRestaurant.Models.stafi", b =>

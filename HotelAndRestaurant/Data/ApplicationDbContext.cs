@@ -89,6 +89,87 @@ namespace HotelAndRestaurant.Data
               new User { Id = 3, FirstName = "receptionist", LastName = "", Email = "receptionist@hotel.com", Password = "$2a$10$rL9JAcahgl2uzhgRdDt9cuV0NNZNNGE9T4.H9SXsl72kM7Vws1BDm", RoleId = 3 },
               new User { Id = 4, FirstName = "housekeeper", LastName = "", Email = "housekeeper1@hotel.com", Password = "$2a$10$rL9JAcahgl2uzhgRdDt9cuV0NNZNNGE9T4.H9SXsl72kM7Vws1BDm", RoleId = 4 }
           );
+            modelBuilder.Entity<RoomType>().HasData(
+                  new RoomType { Id = 21, RoomName = "Single" },
+                  new RoomType { Id = 22, RoomName = "Double" },
+                  new RoomType { Id = 23, RoomName = "Suite" }
+              );
+
+            // Seed data for Room
+            modelBuilder.Entity<Room>().HasData(
+                new Room
+                {
+                    Id = 21,
+                    RoomNumber = 101,
+                    Status = 0,
+                    Image = "/images/image1.jpg",
+                    Price = "100",
+                    Description = "A cozy single room.",
+                    NeedsCleaning = false,
+                    RoomTypeId = 21 // Single
+                },
+                new Room
+                {
+                    Id = 22,
+                    RoomNumber = 102,
+                    Status = 0,
+
+
+                    Image = "/images/image2.jpg",
+                    Price = "150",
+                    Description = "A spacious double room.",
+                    NeedsCleaning = true,
+                    RoomTypeId = 22 // Double
+                },
+                new Room
+                {
+                    Id = 23,
+                    RoomNumber = 103,
+                    Status = 0,
+
+                    Image = "/images/image3.jpg",
+                    Price = "200",
+                    Description = "A luxurious suite.",
+                    NeedsCleaning = false,
+                    RoomTypeId = 23 // Suite
+                },
+                new Room
+                {
+                    Id = 24,
+                    RoomNumber = 104,
+                    Status = 0,
+
+                    Image = "/images/image4.jpg",
+                    Price = "120",
+                    Description = "A comfortable twin room.",
+                    NeedsCleaning = false,
+                    RoomTypeId = 22 // Double
+                },
+                new Room
+                {
+                    Id = 25,
+                    RoomNumber = 105,
+                    Status = 0,
+
+                    Image = "/images/image5.jpg",
+                    Price = "180",
+                    Description = "A deluxe double room.",
+                    NeedsCleaning = true,
+                    RoomTypeId = 22 // Double
+                },
+                new Room
+                {
+                    Id = 26,
+                    RoomNumber = 106,
+                    Status = 0,
+
+                    Image = "/images/image6.jpg",
+                    Price = "250",
+                    Description = "A premium suite.",
+                    NeedsCleaning = false,
+                    RoomTypeId = 23
+                }
+            );
         }
 
         }
