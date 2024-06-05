@@ -29,6 +29,7 @@ namespace HotelAndRestaurant.Data
 
         public DbSet<Payment> Payment { get; set; }
 
+        public DbSet<Contact> Contact { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
