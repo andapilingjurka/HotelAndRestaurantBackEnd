@@ -113,7 +113,7 @@ namespace HotelAndRestaurant.Controllers
             }
 
             objUser.Role = existingState;
-
+            objUser.RefreshTokenExpiryTime = objUser.RefreshTokenExpiryTime ?? DateTime.UtcNow;
 
             // Generate salt and hash password using bcrypt algorithm
             string salt = BCrypt.Net.BCrypt.GenerateSalt();
